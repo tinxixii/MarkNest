@@ -27,6 +27,7 @@ MarkNest started with a messy browser migration: nested folders, duplicate bookm
 
 ## What it does
 
+- Add the current page or edit an existing bookmark in the popup, with a custom title and a searchable folder picker.
 - Browse and search all Chrome bookmarks with their real folder hierarchy and favicons.
 - Find duplicate URLs and bookmarks that have not been opened for a year.
 - Select, move, delete, export, and undo in batches.
@@ -53,6 +54,7 @@ Bookmark organization, import comparison, and export are processed locally. Mark
 | `storage` | Save interface settings, link-check results, and undo snapshots locally. |
 | `downloads` | Export selected bookmarks as a standard HTML file. |
 | `favicon` | Display local Chrome favicon resources in the interface. |
+| `activeTab` | Read the current page title and URL when you open the extension to add a bookmark. |
 | Optional website access | Requested only when the user starts a broken-link check. |
 
 [Read the privacy policy](https://tinxixii.github.io/MarkNest/privacy/) · [Report an issue](https://github.com/tinxixii/MarkNest/issues)
@@ -72,6 +74,12 @@ MarkNest/
 │   ├── assets/
 │   └── _locales/
 └── docs/                 # GitHub Pages site
+```
+
+Run the regression tests with Node.js 20 or newer (no install step):
+
+```sh
+node --test tests/*.test.cjs
 ```
 
 After editing the source, use **Reload** on `chrome://extensions` and reopen the extension.

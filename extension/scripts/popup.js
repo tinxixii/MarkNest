@@ -1,6 +1,6 @@
 'use strict';
 
-const state = { bookmarks: [], folders: [], filtered: [], selected: new Set(), filter: 'all', folderPath: '', folderPickerOpen:false, folderPickerMode:'filter', folderQuery:'', search: '' };
+const state = { bookmarks: [], folders: [], filtered: [], selected: new Set(), filter: 'all', folderPath: '', folderPickerOpen:false, folderPickerMode:'filter', folderQuery:'', search: '', lastAddedBookmark:null };
 const $ = selector => document.querySelector(selector);
 const $$ = selector => Array.from(document.querySelectorAll(selector));
 
@@ -31,14 +31,15 @@ function faviconUrl(pageUrl) {
   } catch { return ''; }
 }
 
-function walk(nodes, path = []) {
+function walk(nodes, path = [], managed = false) {
   for (const node of nodes) {
+    const unmodifiable = managed || Boolean(node.unmodifiable) || node.folderType === 'managed';
     if (node.url) {
-      state.bookmarks.push({ id:node.id, parentId:node.parentId, index:node.index, title:node.title || node.url, url:node.url, path:path.join(' / ') || '收藏夹', lastUsed:node.dateLastUsed || null });
+      state.bookmarks.push({ id:node.id, parentId:node.parentId, index:node.index, title:node.title || node.url, url:node.url, path:path.join(' / ') || '收藏夹', lastUsed:node.dateLastUsed || null, unmodifiable });
     } else {
       const title = node.title || '收藏夹';
-      if (node.id !== '0') state.folders.push({ id:node.id, title, path:[...path,title].join(' / ') });
-      if (node.children) walk(node.children, node.id === '0' ? path : [...path,title]);
+      if (node.id !== '0') state.folders.push({ id:node.id, parentId:node.parentId, title, path:[...path,title].join(' / '), unmodifiable, folderType:node.folderType });
+      if (node.children) walk(node.children, node.id === '0' ? path : [...path,title], unmodifiable);
     }
   }
 }
@@ -110,11 +111,12 @@ function render() {
       <input class="row-check" type="checkbox" data-id="${escapeHtml(item.id)}" ${state.selected.has(item.id) ? 'checked' : ''} aria-label="选择 ${escapeHtml(item.title)}">
       <div class="popup-row-main">
         <span class="popup-favicon-shell"><img class="popup-favicon" src="${escapeHtml(faviconUrl(item.url))}" alt="" loading="lazy"></span>
-        <div class="popup-row-copy">
+        <div class="popup-row-copy" translate="no">
           <a class="popup-title" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</a>
           <div class="popup-meta"><span class="popup-domain">${escapeHtml(hostOf(item.url))}</span><span>·</span><span class="popup-path" title="${escapeHtml(item.path)}"><svg class="popup-folder-glyph" viewBox="0 0 22 18" aria-hidden="true"><path d="M2 5.5V4.2c0-1.2 1-2.2 2.2-2.2h4.1l2.1 2.3h7.4c1.2 0 2.2 1 2.2 2.2v8.3c0 1.2-1 2.2-2.2 2.2H4.2C3 17 2 16 2 14.8V5.5Z"/></svg><span class="popup-path-text">${escapeHtml(item.path)}</span></span></div>
         </div>
       </div>
+      ${item.unmodifiable ? '' : `<button class="row-edit" type="button" data-edit-bookmark="${escapeHtml(item.id)}" aria-label="编辑收藏" title="编辑收藏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5 4 4M4 20l4.5-1L20 7.5a2.8 2.8 0 0 0-4-4L4.5 15Z"/></svg></button>`}
     </article>`).join('') : `<div class="popup-empty"><div><strong>没有匹配的收藏</strong><span>换个关键词、文件夹或筛选条件试试。</span></div></div>`;
   renderSelection();
 }
@@ -133,26 +135,29 @@ function syncRowSelection(row, checkbox) {
   renderSelection();
 }
 
+let bookmarkLoadRevision = 0;
 async function loadBookmarks() {
+  const revision = ++bookmarkLoadRevision;
   const tree = await chrome.bookmarks.getTree();
+  if (revision !== bookmarkLoadRevision) return;
+  state.bookmarks = [];
+  state.folders = [];
   walk(tree);
   markIssues();
-  $('#folderFilter').insertAdjacentHTML('beforeend', state.folders.map(folder => `<option value="${escapeHtml(folder.path)}">${escapeHtml(folder.path)}</option>`).join(''));
+  $('#folderFilter').innerHTML = '<option value="">所有文件夹</option>' + state.folders.map(folder => `<option value="${escapeHtml(folder.path)}" translate="no">${escapeHtml(folder.path)}</option>`).join('');
   render();
   await checkRestore();
 }
 
 async function reloadBookmarks() {
-  state.bookmarks = [];
-  state.folders = [];
   state.selected.clear();
-  $('#folderFilter').innerHTML = '<option value="">所有文件夹</option>';
   await loadBookmarks();
 }
 
 async function moveSelected(target) {
   if (!target) return;
   const items = state.bookmarks.filter(item => state.selected.has(item.id));
+  await chrome.storage.local.remove('lastDeleteSnapshot');
   await chrome.storage.local.set({
     lastActionSnapshot: {
       type:'move',
@@ -166,6 +171,7 @@ async function moveSelected(target) {
 
 async function deleteSelected() {
   const items = state.bookmarks.filter(item => state.selected.has(item.id));
+  await chrome.storage.local.remove('lastDeleteSnapshot');
   await chrome.storage.local.set({ lastActionSnapshot:{ type:'delete', createdAt:new Date().toISOString(), items:items.map(({title,url,parentId,index,path}) => ({title,url,parentId,index,path})) } });
   for (const item of items) await chrome.bookmarks.remove(item.id);
   state.bookmarks = state.bookmarks.filter(item => !state.selected.has(item.id));
@@ -197,18 +203,60 @@ async function checkRestore() {
   const stored = await chrome.storage.local.get(['lastActionSnapshot','lastDeleteSnapshot']);
   const snapshot = stored.lastActionSnapshot || stored.lastDeleteSnapshot;
   const available = snapshot?.type === 'deleteTree' ? Boolean(snapshot.tree) : Boolean(snapshot?.items?.length);
+  $('#addBookmarkBtn').textContent = '添加';
+  $('#undoBtn').hidden = !available;
+  $('#undoBtn').classList.toggle('undo-hidden', !available);
   $('#undoBtn').disabled = !available;
-  $('#undoBtn').textContent = !available ? '撤销' : snapshot.type === 'move' ? '撤销移动' : '撤销删除';
+  $('#undoBtn').textContent = '撤销';
+  const label = snapshot?.type === 'edit' ? '撤销编辑' : snapshot?.type === 'add' ? '撤销添加' : snapshot?.type === 'move' ? '撤销移动' : '撤销删除';
+  $('#undoBtn').title = label;
+  $('#undoBtn').setAttribute('aria-label', label);
+  MarkNestI18n.apply($('#undoBtn'));
 }
 
-async function restoreLastAction() {
+let toastTimer;
+function hideToastLater() {
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { $('#popupToast').hidden = true; }, 6500);
+}
+function showToast(message, withEdit = false, withUndo = false) {
+  const toast = $('#popupToast');
+  $('#popupToastText').textContent = message;
+  $('#editAddedBtn').hidden = !withEdit;
+  $('#undoToastBtn').hidden = !withUndo;
+  toast.hidden = false;
+  MarkNestI18n.apply(toast);
+  hideToastLater();
+}
+
+let undoInProgress = false;
+async function restoreLastAction(expectedId) {
+  if (undoInProgress) return;
+  undoInProgress = true;
+  $('#undoBtn').disabled = true;
+  $('#undoToastBtn').disabled = true;
+  try {
+    await performRestoreLastAction(expectedId);
+  } catch {
+    showToast('撤销失败，请重试');
+  } finally {
+    undoInProgress = false;
+    $('#undoToastBtn').disabled = false;
+    await checkRestore().catch(() => {});
+  }
+}
+async function performRestoreLastAction(expectedId) {
   const stored = await chrome.storage.local.get(['lastActionSnapshot','lastDeleteSnapshot']);
   const snapshot = stored.lastActionSnapshot || (stored.lastDeleteSnapshot ? { ...stored.lastDeleteSnapshot, type:'delete' } : null);
   if (!snapshot) return;
-  if (snapshot.type === 'move') {
+  if (expectedId && !snapshot.items?.some(item => item.id === expectedId)) { showToast('操作记录已更新，请使用顶部撤销'); return; }
+  const restoringAddedBookmark = snapshot.type === 'add';
+  if (snapshot.type === 'move' || snapshot.type === 'folderMove') {
     for (const item of [...snapshot.items].sort((a,b) => a.index - b.index)) {
       try { await chrome.bookmarks.move(item.id, { parentId:item.parentId, index:item.index }); } catch { /* Item or folder no longer exists. */ }
     }
+  } else if (snapshot.type === 'add' || snapshot.type === 'edit') {
+    await MarkNestBookmarkService.undo(snapshot);
   } else if (snapshot.type === 'deleteTree' && snapshot.tree) {
     let parentId = snapshot.tree.parentId;
     try { await chrome.bookmarks.get(parentId); } catch { parentId = await ensureRestoredFolder(); }
@@ -219,7 +267,13 @@ async function restoreLastAction() {
       catch { await chrome.bookmarks.create({ parentId:await ensureRestoredFolder(), title:item.title, url:item.url }); }
     }
   }
-  await chrome.storage.local.remove(['lastActionSnapshot','lastDeleteSnapshot']);
+  await MarkNestBookmarkService.clearHistory(snapshot);
+  if (restoringAddedBookmark) {
+    state.lastAddedBookmark = null;
+    window.MarkNestEditor?.close();
+    showToast('已撤销添加');
+  }
+  if (snapshot.type === 'edit') showToast('已撤销编辑');
   await reloadBookmarks();
 }
 
@@ -232,6 +286,8 @@ $('.popup-summary').addEventListener('click', event => { const button=event.targ
 $('#searchInput').addEventListener('input', event => { state.search=event.target.value.trim(); state.selected.clear(); render(); });
 $('#folderFilter').addEventListener('change', event => { state.folderPath=event.target.value; state.folderPickerOpen=false; state.selected.clear(); render(); });
 $('#bookmarkList').addEventListener('click', async event => {
+  const edit = event.target.closest('[data-edit-bookmark]');
+  if (edit) { await MarkNestEditor.openExisting(edit.dataset.editBookmark); return; }
   if (event.target.closest('[data-close-folder-picker]')) { state.folderPickerOpen=false; state.folderQuery=''; render(); return; }
   const folder = event.target.closest('[data-folder-path]');
   if (folder) {
@@ -273,8 +329,15 @@ $('#movePickerBtn').addEventListener('click', () => { state.folderPickerOpen=tru
 $('#deleteBtn').addEventListener('click', () => { $('#confirmText').textContent=`将删除 ${state.selected.size} 个收藏，可通过顶部“撤销”恢复。`; $('#confirmDialog').hidden=false; });
 $('#cancelDeleteBtn').addEventListener('click', () => { $('#confirmDialog').hidden=true; });
 $('#confirmDeleteBtn').addEventListener('click', deleteSelected);
-$('#undoBtn').addEventListener('click', restoreLastAction);
+$('#undoBtn').addEventListener('click', () => restoreLastAction());
 $('#openWorkspaceBtn').addEventListener('click', openWorkspace);
+$('#addBookmarkBtn').addEventListener('click', () => MarkNestEditor.openNew());
+$('#editAddedBtn').addEventListener('click', () => { if (state.lastAddedBookmark) MarkNestEditor.openExisting(state.lastAddedBookmark.id); });
+$('#undoToastBtn').addEventListener('click', () => restoreLastAction(state.lastAddedBookmark?.id));
+$('#popupToast').addEventListener('mouseenter', () => clearTimeout(toastTimer));
+$('#popupToast').addEventListener('mouseleave', hideToastLater);
+$('#popupToast').addEventListener('focusin', () => clearTimeout(toastTimer));
+$('#popupToast').addEventListener('focusout', hideToastLater);
 
 MarkNestI18n.ready.then(() => MarkNestI18n.apply());
 

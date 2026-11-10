@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "description": "__MSG_extensionDescription__",
   "default_locale": "zh_CN",
-  "permissions": ["bookmarks", "storage", "downloads", "favicon"],
+  "permissions": ["bookmarks", "storage", "downloads", "favicon", "activeTab"],
   "optional_host_permissions": ["http://*/*", "https://*/*"],
   "icons": {
     "16": "assets/icons/icon16.png",

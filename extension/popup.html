@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MarkNest</title>
   <link rel="stylesheet" href="styles/popup.css">
+  <link rel="stylesheet" href="styles/editor.css">
 </head>
 <body>
   <main class="popup-shell">
     <header class="popup-header">
       <div class="popup-brand"><img src="assets/logo.svg" alt="" aria-hidden="true"><div><strong>MarkNest</strong><small>收藏夹整理</small></div></div>
-      <div class="header-actions"><button class="header-button workspace-entry" id="openWorkspaceBtn">深度整理</button><button class="header-button" id="undoBtn" disabled>撤销</button></div>
+      <div class="header-actions"><button class="header-button add-entry" id="addBookmarkBtn">添加</button><button class="header-button workspace-entry" id="openWorkspaceBtn">深度整理</button><button class="header-button" id="undoBtn" title="撤销上一步" aria-label="撤销上一步" disabled hidden>撤销</button></div>
     </header>
 
     <label class="popup-search">
@@ -42,7 +43,70 @@
     <div><strong>删除所选收藏？</strong><p id="confirmText">删除后可通过顶部“撤销”恢复。</p><footer><button id="cancelDeleteBtn">取消</button><button class="danger" id="confirmDeleteBtn">确认删除</button></footer></div>
   </div>
 
+  <div class="popup-toast" id="popupToast" role="status" aria-live="polite" hidden>
+    <span id="popupToastText"></span>
+    <button id="editAddedBtn" type="button" hidden>编辑</button>
+    <button id="undoToastBtn" type="button" hidden>撤销</button>
+  </div>
+
+  <dialog class="bookmark-editor" id="bookmarkEditor" aria-labelledby="editorHeading" aria-describedby="editorHint">
+    <form id="bookmarkForm" novalidate>
+      <fieldset id="editorFields">
+        <div class="editor-top">
+          <header class="editor-header">
+            <div class="editor-heading-group">
+              <span class="editor-bookmark-mark" aria-hidden="true"><svg viewBox="0 0 20 24" fill="none"><path d="M4 3h12v18l-6-4-6 4V3Z"/></svg></span>
+              <h2 id="editorHeading">添加书签</h2>
+            </div>
+            <button class="editor-close" id="closeEditorBtn" type="button" aria-label="关闭编辑" title="关闭编辑"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"/></svg></button>
+          </header>
+          <p class="editor-hint" id="editorHint">给它一个好名字，放在顺手的位置。</p>
+          <div class="editor-source" translate="no">
+            <span class="editor-source-icon"><img id="editorFavicon" alt=""></span>
+            <span class="editor-source-copy"><span id="editorDomain"></span><span id="editorUrl"></span></span>
+          </div>
+        </div>
+
+        <div class="editor-content">
+          <div class="editor-field editor-name-field">
+            <label for="bookmarkTitle">名称</label>
+            <input id="bookmarkTitle" type="text" required maxlength="1000" autocomplete="off" spellcheck="false" aria-describedby="editorError" translate="no">
+          </div>
+          <div class="editor-field editor-destination-field">
+            <label for="chooseFolderBtn">保存位置</label>
+            <button class="chosen-folder" id="chooseFolderBtn" data-user-title type="button" aria-expanded="false" aria-controls="editorFolderPanel">
+              <span class="chosen-folder-icon" aria-hidden="true"><svg viewBox="0 0 24 22"><path d="M3 6V4.5A1.5 1.5 0 0 1 4.5 3H9l2.5 3H19a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/></svg></span>
+              <span class="chosen-folder-copy"><span id="chosenFolderName"></span><small id="chosenFolderPath"></small></span>
+              <svg class="chosen-folder-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="m5 6 3 3 3-3"/></svg>
+            </button>
+          </div>
+
+          <section class="editor-folder-panel" id="editorFolderPanel" aria-label="选择文件夹" hidden>
+            <label class="editor-folder-search">
+              <span class="popup-search-icon" aria-hidden="true"></span>
+              <input id="editorFolderSearch" type="search" placeholder="搜索文件夹" aria-label="搜索文件夹" autocomplete="off">
+            </label>
+            <nav class="editor-breadcrumbs" id="editorBreadcrumbs" aria-label="文件夹路径"></nav>
+            <div class="editor-folder-results" id="editorFolderResults"></div>
+            <div class="editor-folder-footer"><button id="closeFolderPickerBtn" type="button">收起目录<svg viewBox="0 0 16 16" aria-hidden="true"><path d="m5 9 3-3 3 3"/></svg></button></div>
+          </section>
+          <p class="editor-error" id="editorError" role="alert" hidden></p>
+        </div>
+
+        <footer class="editor-footer">
+          <span class="editor-shortcut" id="editorShortcut">Enter 保存 · Esc 返回</span>
+          <div class="editor-footer-actions">
+            <button class="editor-cancel" id="cancelEditorBtn" type="button">取消</button>
+            <button class="editor-save primary" id="saveBookmarkBtn" type="submit">保存书签</button>
+          </div>
+        </footer>
+      </fieldset>
+    </form>
+  </dialog>
+
   <script src="scripts/i18n.js"></script>
+  <script src="scripts/bookmark-service.js"></script>
   <script src="scripts/popup.js"></script>
+  <script src="scripts/bookmark-editor.js"></script>
 </body>
 </html>

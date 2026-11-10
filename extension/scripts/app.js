@@ -1540,6 +1540,20 @@ async function restoreLastAction() {
     : null);
   if (!snapshot || (snapshot.type !== 'deleteTree' && !snapshot.items?.length) || (snapshot.type === 'deleteTree' && !snapshot.tree)) return;
 
+  if (snapshot.type === 'add' || snapshot.type === 'edit') {
+    $('#restoreBtn').disabled = true;
+    try {
+      await MarkNestBookmarkService.undo(snapshot);
+      await MarkNestBookmarkService.clearHistory(snapshot);
+      showToast(snapshot.type === 'add' ? '已撤销添加' : '已撤销编辑');
+      await scanBookmarks();
+    } catch {
+      showToast('未能撤销，请检查收藏或文件夹后重试');
+      await checkRestore();
+    }
+    return;
+  }
+
   if (snapshot.type === 'deleteTree') {
     let parentId = snapshot.tree.parentId;
     try {
@@ -1603,6 +1617,8 @@ async function checkRestore() {
     : snapshot.type === 'move' ? '撤销上次整理'
       : snapshot.type === 'folderMove' ? '撤销文件夹调整'
       : snapshot.type === 'deleteTree' ? '撤销删除'
+      : snapshot.type === 'add' ? '撤销添加'
+      : snapshot.type === 'edit' ? '撤销编辑'
         : '撤销上次删除';
 }
 

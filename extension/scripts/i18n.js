@@ -23,6 +23,14 @@
   Object.assign(dictionaries.fr, { '全部状态':'Tous les états', '重复收藏':'Doublon', '失效链接':'Lien invalide', '按状态筛选':'Filtrer par état' });
   Object.assign(dictionaries.de, { '全部状态':'Alle Status', '重复收藏':'Duplikat', '失效链接':'Defekter Link', '按状态筛选':'Nach Status filtern' });
   Object.assign(dictionaries.en, {
+    '添加':'Add',
+    '撤销添加':'Undo add',
+    '当前页面无法添加到收藏夹':'This page cannot be added to bookmarks',
+    '编辑':'Edit',
+    '编辑刚添加的收藏':'Edit just-added bookmark',
+    '标题':'Title',
+    '收藏已更新':'Bookmark updated',
+    '更新收藏失败':'Could not update bookmark',
     '重复网址':'Duplicate URLs',
     '移动到文件夹':'Move to folder',
     '选择文件夹':'Choose a folder',
@@ -137,6 +145,193 @@
     '这一组没有内容':'Diese Gruppe ist leer'
   });
 
+  // Bookmark editor copy. User-entered titles and paths are never dictionary keys.
+  Object.assign(dictionaries.en, {
+    "添加": "Add",
+    "编辑": "Edit",
+    "撤销上一步": "Undo last action",
+    "撤销添加": "Undo add",
+    "已撤销添加": "Bookmark addition undone",
+    "撤销编辑": "Undo edit",
+    "已撤销编辑": "Bookmark edit undone",
+    "撤销移动": "Undo move",
+    "撤销删除": "Undo delete",
+    "添加书签": "New bookmark",
+    "收藏当前页面": "Save this page",
+    "编辑收藏": "Edit bookmark",
+    "关闭编辑": "Close editor",
+    "名称": "Name",
+    "保存位置": "Save to",
+    "保存书签": "Save bookmark",
+    "保存修改": "Save changes",
+    "正在保存…": "Saving…",
+    "收起目录": "Close folders",
+    "文件夹路径": "Folder path",
+    "打开子文件夹": "Browse subfolders",
+    "Enter 保存 · Esc 返回": "Enter to save · Esc to return",
+    "给它一个好名字，放在顺手的位置。": "A useful name. A place you’ll remember.",
+    "起个好找的名字，放到合适的位置。": "A useful name. A place you’ll remember.",
+    "这个页面已经收藏，可以直接修改。": "Already bookmarked. Make any changes here.",
+    "请选择保存位置": "Choose a destination",
+    "请输入收藏名称": "Enter a bookmark name",
+    "请选择有效的保存位置": "Choose an available folder",
+    "这个文件夹已不可用，请重新选择": "This folder is unavailable. Choose another.",
+    "此收藏或文件夹为只读，请选择其他位置": "This bookmark or folder is read-only. Choose another location.",
+    "修改未完全完成，请检查名称和位置后重试": "Some changes could not be saved. Check the name and folder, then retry.",
+    "保存失败，你的输入已保留，请重试": "Couldn’t save. Your changes are still here—please retry.",
+    "这条收藏已移除或无法编辑": "This bookmark was removed or cannot be edited",
+    "无法读取当前页面，请重新打开插件": "Couldn’t read this page. Reopen MarkNest and try again.",
+    "当前页面无法添加到收藏夹": "This page cannot be bookmarked",
+    "已保存，请重新打开插件刷新列表": "Saved. Reopen MarkNest to refresh the list.",
+    "已保存，暂时无法记录撤销": "Saved. Undo is temporarily unavailable.",
+    "撤销失败，请重试": "Couldn’t undo. Please retry.",
+    "操作记录已更新，请使用顶部撤销": "Action history changed. Use Undo at the top.",
+    "未能撤销，请检查收藏或文件夹后重试": "Couldn’t undo. Check the bookmark or folder and retry.",
+    "读取失败": "Couldn’t load bookmarks",
+    "请在扩展管理页确认收藏权限。": "Check bookmark access on the extensions page.",
+    "筛选文件夹": "Filter folders"
+  });
+  Object.assign(dictionaries.ja, {
+    "添加": "追加",
+    "编辑": "編集",
+    "撤销上一步": "前の操作を元に戻す",
+    "撤销添加": "追加を元に戻す",
+    "已撤销添加": "追加を取り消しました",
+    "撤销编辑": "編集を元に戻す",
+    "已撤销编辑": "編集を取り消しました",
+    "撤销移动": "移動を元に戻す",
+    "撤销删除": "削除を元に戻す",
+    "添加书签": "ブックマークを追加",
+    "收藏当前页面": "このページを保存",
+    "编辑收藏": "ブックマークを編集",
+    "关闭编辑": "編集画面を閉じる",
+    "名称": "名前",
+    "保存位置": "保存先",
+    "保存书签": "保存",
+    "保存修改": "変更を保存",
+    "正在保存…": "保存中…",
+    "收起目录": "フォルダを閉じる",
+    "文件夹路径": "フォルダの場所",
+    "打开子文件夹": "サブフォルダを開く",
+    "Enter 保存 · Esc 返回": "Enter で保存 · Esc で戻る",
+    "给它一个好名字，放在顺手的位置。": "見つけやすい名前と、使いやすい保存先に。",
+    "起个好找的名字，放到合适的位置。": "見つけやすい名前と、使いやすい保存先に。",
+    "这个页面已经收藏，可以直接修改。": "保存済みのページです。ここで変更できます。",
+    "请选择保存位置": "保存先を選択",
+    "请输入收藏名称": "ブックマーク名を入力してください",
+    "请选择有效的保存位置": "利用できる保存先を選んでください",
+    "这个文件夹已不可用，请重新选择": "このフォルダは利用できません。選び直してください。",
+    "此收藏或文件夹为只读，请选择其他位置": "このブックマークまたはフォルダは読み取り専用です。別の場所を選んでください。",
+    "修改未完全完成，请检查名称和位置后重试": "一部の変更を保存できませんでした。名前と保存先を確認して再試行してください。",
+    "保存失败，你的输入已保留，请重试": "保存できませんでした。入力は保持されています。再試行してください。",
+    "这条收藏已移除或无法编辑": "このブックマークは削除されたか、編集できません",
+    "无法读取当前页面，请重新打开插件": "ページを読み取れませんでした。MarkNest を開き直してください。",
+    "当前页面无法添加到收藏夹": "このページはブックマークに追加できません",
+    "已保存，请重新打开插件刷新列表": "保存しました。一覧を更新するには MarkNest を開き直してください。",
+    "已保存，暂时无法记录撤销": "保存しました。現在、元に戻す操作は利用できません。",
+    "撤销失败，请重试": "元に戻せませんでした。再試行してください。",
+    "操作记录已更新，请使用顶部撤销": "操作履歴が更新されました。上部の「元に戻す」を使ってください。",
+    "未能撤销，请检查收藏或文件夹后重试": "元に戻せませんでした。ブックマークやフォルダを確認して再試行してください。",
+    "读取失败": "読み込みに失敗しました",
+    "请在扩展管理页确认收藏权限。": "拡張機能の管理画面でブックマークへのアクセス権を確認してください。",
+    "筛选文件夹": "フォルダを絞り込む"
+  });
+  Object.assign(dictionaries.fr, {
+    "添加": "Ajouter",
+    "编辑": "Modifier",
+    "撤销上一步": "Annuler la dernière action",
+    "撤销添加": "Annuler l’ajout",
+    "已撤销添加": "Ajout annulé",
+    "撤销编辑": "Annuler la modification",
+    "已撤销编辑": "Modification annulée",
+    "撤销移动": "Annuler le déplacement",
+    "撤销删除": "Annuler la suppression",
+    "添加书签": "Nouveau favori",
+    "收藏当前页面": "Enregistrer cette page",
+    "编辑收藏": "Modifier le favori",
+    "关闭编辑": "Fermer l’éditeur",
+    "名称": "Nom",
+    "保存位置": "Emplacement",
+    "保存书签": "Enregistrer",
+    "保存修改": "Enregistrer",
+    "正在保存…": "Enregistrement…",
+    "收起目录": "Masquer les dossiers",
+    "文件夹路径": "Chemin du dossier",
+    "打开子文件夹": "Parcourir les sous-dossiers",
+    "Enter 保存 · Esc 返回": "Entrée : enregistrer · Échap : retour",
+    "给它一个好名字，放在顺手的位置。": "Un nom utile, un emplacement facile à retrouver.",
+    "起个好找的名字，放到合适的位置。": "Un nom utile, un emplacement facile à retrouver.",
+    "这个页面已经收藏，可以直接修改。": "Cette page est déjà enregistrée. Modifiez-la ici.",
+    "请选择保存位置": "Choisissez un emplacement",
+    "请输入收藏名称": "Saisissez un nom pour le favori",
+    "请选择有效的保存位置": "Choisissez un dossier disponible",
+    "这个文件夹已不可用，请重新选择": "Ce dossier n’est plus disponible. Choisissez-en un autre.",
+    "此收藏或文件夹为只读，请选择其他位置": "Ce favori ou dossier est en lecture seule. Choisissez un autre emplacement.",
+    "修改未完全完成，请检查名称和位置后重试": "Certaines modifications n’ont pas été enregistrées. Vérifiez le nom et le dossier, puis réessayez.",
+    "保存失败，你的输入已保留，请重试": "Enregistrement impossible. Votre saisie est conservée. Réessayez.",
+    "这条收藏已移除或无法编辑": "Ce favori a été supprimé ou ne peut pas être modifié",
+    "无法读取当前页面，请重新打开插件": "Impossible de lire cette page. Rouvrez MarkNest et réessayez.",
+    "当前页面无法添加到收藏夹": "Cette page ne peut pas être ajoutée aux favoris",
+    "已保存，请重新打开插件刷新列表": "Enregistré. Rouvrez MarkNest pour actualiser la liste.",
+    "已保存，暂时无法记录撤销": "Enregistré. L’annulation est temporairement indisponible.",
+    "撤销失败，请重试": "Impossible d’annuler. Réessayez.",
+    "操作记录已更新，请使用顶部撤销": "L’historique a changé. Utilisez Annuler en haut.",
+    "未能撤销，请检查收藏或文件夹后重试": "Impossible d’annuler. Vérifiez le favori ou le dossier, puis réessayez.",
+    "读取失败": "Chargement impossible",
+    "请在扩展管理页确认收藏权限。": "Vérifiez l’accès aux favoris dans la page des extensions.",
+    "筛选文件夹": "Filtrer les dossiers"
+  });
+  Object.assign(dictionaries.de, {
+    "添加": "Hinzufügen",
+    "编辑": "Bearbeiten",
+    "撤销上一步": "Letzte Aktion rückgängig",
+    "撤销添加": "Hinzufügen rückgängig",
+    "已撤销添加": "Hinzufügen rückgängig gemacht",
+    "撤销编辑": "Bearbeitung rückgängig",
+    "已撤销编辑": "Bearbeitung rückgängig gemacht",
+    "撤销移动": "Verschieben rückgängig",
+    "撤销删除": "Löschen rückgängig",
+    "添加书签": "Neues Lesezeichen",
+    "收藏当前页面": "Diese Seite speichern",
+    "编辑收藏": "Lesezeichen bearbeiten",
+    "关闭编辑": "Bearbeitung schließen",
+    "名称": "Name",
+    "保存位置": "Speichern unter",
+    "保存书签": "Speichern",
+    "保存修改": "Speichern",
+    "正在保存…": "Wird gespeichert…",
+    "收起目录": "Ordner schließen",
+    "文件夹路径": "Ordnerpfad",
+    "打开子文件夹": "Unterordner öffnen",
+    "Enter 保存 · Esc 返回": "Enter speichern · Esc zurück",
+    "给它一个好名字，放在顺手的位置。": "Ein guter Name. Ein passender Platz.",
+    "起个好找的名字，放到合适的位置。": "Ein guter Name. Ein passender Platz.",
+    "这个页面已经收藏，可以直接修改。": "Diese Seite ist schon gespeichert. Hier lässt sie sich bearbeiten.",
+    "请选择保存位置": "Speicherort wählen",
+    "请输入收藏名称": "Bitte einen Namen eingeben",
+    "请选择有效的保存位置": "Bitte einen verfügbaren Ordner wählen",
+    "这个文件夹已不可用，请重新选择": "Dieser Ordner ist nicht verfügbar. Bitte einen anderen wählen.",
+    "此收藏或文件夹为只读，请选择其他位置": "Dieses Lesezeichen oder dieser Ordner ist schreibgeschützt. Bitte einen anderen Ort wählen.",
+    "修改未完全完成，请检查名称和位置后重试": "Einige Änderungen konnten nicht gespeichert werden. Name und Ordner prüfen, dann erneut versuchen.",
+    "保存失败，你的输入已保留，请重试": "Speichern fehlgeschlagen. Ihre Eingaben bleiben erhalten. Bitte erneut versuchen.",
+    "这条收藏已移除或无法编辑": "Dieses Lesezeichen wurde entfernt oder kann nicht bearbeitet werden",
+    "无法读取当前页面，请重新打开插件": "Diese Seite konnte nicht gelesen werden. MarkNest erneut öffnen.",
+    "当前页面无法添加到收藏夹": "Diese Seite kann nicht als Lesezeichen gespeichert werden",
+    "已保存，请重新打开插件刷新列表": "Gespeichert. MarkNest erneut öffnen, um die Liste zu aktualisieren.",
+    "已保存，暂时无法记录撤销": "Gespeichert. Rückgängig ist derzeit nicht verfügbar.",
+    "撤销失败，请重试": "Rückgängig fehlgeschlagen. Bitte erneut versuchen.",
+    "操作记录已更新，请使用顶部撤销": "Der Verlauf hat sich geändert. Bitte oben „Rückgängig“ verwenden.",
+    "未能撤销，请检查收藏或文件夹后重试": "Rückgängig fehlgeschlagen. Lesezeichen oder Ordner prüfen und erneut versuchen.",
+    "读取失败": "Laden fehlgeschlagen",
+    "请在扩展管理页确认收藏权限。": "Lesezeichen-Zugriff auf der Erweiterungsseite prüfen.",
+    "筛选文件夹": "Ordner filtern"
+  });
+
+  Object.assign(dictionaries.en, { '收藏没有变化': 'No changes to save' });
+  Object.assign(dictionaries.ja, { '收藏没有变化': '変更はありません' });
+  Object.assign(dictionaries.fr, { '收藏没有变化': 'Aucune modification à enregistrer' });
+  Object.assign(dictionaries.de, { '收藏没有变化': 'Keine Änderungen zu speichern' });
+
   let locale = FALLBACK;
   let applying = false;
   const textState = new WeakMap();
@@ -154,7 +349,22 @@
   // templates here so confirmation dialogs remain one language end to end.
   function translateDynamic(source) {
     if (locale === FALLBACK) return null;
-    let match = source.match(/^确认删除这 (\d+) 个收藏？$/);
+    let match = source.match(/^已保存到：([\s\S]*)$/);
+    if (match) {
+      const path = match[1];
+      return {
+        en: `Saved to: ${path}`,
+        ja: `保存先：${path}`,
+        fr: `Enregistré dans : ${path}`,
+        de: `Gespeichert in: ${path}`
+      }[locale];
+    }
+    match = source.match(/^选择 ([\s\S]+)$/);
+    if (match) {
+      const title = match[1];
+      return { en: `Select ${title}`, ja: `${title} を選択`, fr: `Sélectionner ${title}`, de: `${title} auswählen` }[locale];
+    }
+    match = source.match(/^确认删除这 (\d+) 个收藏？$/);
     if (match) {
       const count = match[1];
       return {
@@ -252,6 +462,7 @@
   }
 
   function translateTextNode(node) {
+    if (node.parentElement?.closest('[translate="no"]')) return;
     const current = node.nodeValue;
     if (!current || !current.trim()) return;
     const previous = textState.get(node);
@@ -266,9 +477,11 @@
   }
 
   function translateAttributes(element) {
+    if (element.closest?.('[translate="no"]')) return;
     const attributes = ['placeholder', 'title', 'aria-label'];
     let states = attrState.get(element) || {};
     for (const name of attributes) {
+      if (name === 'title' && element.hasAttribute('data-user-title')) continue;
       if (!element.hasAttribute(name)) continue;
       const current = element.getAttribute(name);
       const previous = states[name];

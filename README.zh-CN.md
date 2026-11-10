@@ -27,6 +27,7 @@ MarkNest 源于一次真实的浏览器迁移：文件夹层层嵌套、重复�
 
 ## 核心功能
 
+- 在弹窗中添加当前页面或编辑已有收藏，保存前可修改名称并搜索、选择文件夹。
 - 按真实文件夹层级查看和搜索 Chrome 收藏，并展示网站图标。
 - 查找重复网址和一年未打开的收藏。
 - 批量选择、移动、删除、导出，并支持撤销最近操作。
@@ -53,6 +54,7 @@ MarkNest 不包含 AI 分类、账号、广告或分析 SDK。
 | `storage` | 在本地保存界面设置、链接检查结果和撤销快照。 |
 | `downloads` | 将选中的收藏导出为标准 HTML 文件。 |
 | `favicon` | 在界面中显示 Chrome 本地保存的网站图标。 |
+| `activeTab` | 打开扩展添加收藏时，读取当前页面的标题和网址。 |
 | 可选网站访问权限 | 仅在用户主动运行失效链接检查时申请。 |
 
 [查看隐私政策](https://tinxixii.github.io/MarkNest/privacy/) · [反馈问题](https://github.com/tinxixii/MarkNest/issues)
@@ -72,6 +74,12 @@ MarkNest/
 │   ├── assets/
 │   └── _locales/
 └── docs/                 # GitHub Pages 站点
+```
+
+使用 Node.js 20 或更高版本运行回归测试，无需安装依赖：
+
+```sh
+node --test tests/*.test.cjs
 ```
 
 修改源代码后，在 `chrome://extensions` 点击扩展卡片上的“重新加载”，再重新打开插件即可。
